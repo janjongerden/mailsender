@@ -3,9 +3,13 @@ Stand-alone rest service that sends email
 
 This light weight service listens for posts and then sends them to the email address specified as a command line argument.
 Enables mail-sending from a form without the use of PHP or CGI scripts and without including your mail address in the html source.
-To run the service, clone the project and run this maven command:
+To run the service, clone the project and build it:
 
-mvn clean install exec:java -Dexec.mainClass="nl.janjongerden.mail.MailSender" -Dexec.args="yourname@example.org https://example.org/thank_you.html"
+mvn clean install
+
+Now run the executable jar with your email address and the redirect page as parameters:
+
+java -jar mailsender-1.0-SNAPSHOT.jar yourname@example.org https://example.org/thank_you.html
 
 After this you will have a service listening for mail-posts on port <yourhost>:4567/mail
 
