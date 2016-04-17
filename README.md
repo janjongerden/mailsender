@@ -7,6 +7,6 @@ To run the service, clone the project and run this maven command:
 
 mvn clean install exec:java -Dexec.mainClass="nl.janjongerden.mail.MailSender" -Dexec.args="yourname@example.org https://example.org/thank_you.html"
 
-After this you will have a service listening for mail-posts on port 4567.
+After this you will have a service listening for mail-posts on port <yourhost>:4567/mail
 
 No warranty + feel free to use any way you see fit.
