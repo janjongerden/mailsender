@@ -4,6 +4,7 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.log4j.Logger;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -18,6 +19,9 @@ public class MailSender {
 
     private static String thanksLocation = "/thanks";
 
+    private static final Logger LOG = Logger.getLogger(MailSender.class);
+
+
     /**
      * Start the server.
      *
@@ -31,6 +35,7 @@ public class MailSender {
         if (args.length > 1) {
             thanksLocation = args[1];
         }
+        LOG.info("Mailsender started with toaddress '"+toAddress+"' and thanks page '"+thanksLocation+"'");
 
         get("/thanks", (request, response) -> "Thank you for your message!");
 
@@ -52,7 +57,7 @@ public class MailSender {
         message = "Someone with email address '" + fromEmail + "' named '" + name
                 + "' sends you this message: \n\n" + message;
 
-        System.out.println("Sending email to " + toAddress + ", message=\n\n" + message);
+        LOG.info("Sending email to " + toAddress + ", message=\n\n" + message);
 
         try {
             Email email = new SimpleEmail();
@@ -67,8 +72,7 @@ public class MailSender {
             email.addTo(toAddress);
             email.send();
         } catch (EmailException e) {
-            System.err.println("Failed to send message: " + e.getMessage());
-            e.printStackTrace();
+            LOG.error("Failed to send message: " + e.getMessage(), e);
             return false;
         }
 
