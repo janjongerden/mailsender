@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Mail</title>
+</head>
+
+<body>
+    <form method="post" action="http://localhost:4567/mail">
+        <label for="name">Your name</label>
+        <input autofocus="autofocus" type="text" name="name" id="name" />
+        <br />
+
+        <label for="email">Your email</label>
+        <input type="email" name="email" id="email" />
+        <br />
+
+        <label for="message">Message</label>
+        <textarea required="required" rows="4" cols="50" name="message" id="message">
+        </textarea>
+        <br />
+
+        <input type="submit" value="Send mail">
+    </form>
+</body>
+</html>
