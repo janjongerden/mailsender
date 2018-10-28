@@ -5,11 +5,15 @@ This light weight service listens for posts and then sends them to the email add
 Enables mail-sending from a form without the use of PHP or CGI scripts and without including your mail address in the html source.
 To run the service, clone the project and build it:
 
+```
 mvn clean install
+```
 
 Now run the executable jar with your email address and the redirect page as parameters:
 
+```
 java -jar mailsender-1.0-SNAPSHOT.jar yourname@example.org https://example.org/thank_you.html
+```
 
 After this you will have a service listening for mail-posts on port <yourhost>:4567/mail
 
