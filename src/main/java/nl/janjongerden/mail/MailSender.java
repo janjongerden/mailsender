@@ -6,6 +6,7 @@ import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -44,8 +45,10 @@ public class MailSender {
             String name = request.queryParams("name");
             String email = request.queryParams("email");
             String message = request.queryParams("message");
+            // this is a field only intended to be used by spam bots
+            String noHuman = request.queryParams("nohuman");
 
-            if (sendMail(email, name, message)) {
+            if (sendMail(email, name, message, noHuman)) {
                 response.redirect(thanksLocation);
             }
 
@@ -53,12 +56,16 @@ public class MailSender {
         });
     }
 
-    private static boolean sendMail(String fromEmail, String name, String message) {
+    private static boolean sendMail(String fromEmail, String name, String message, String noHuman) {
 
-        message = "Someone with email address '" + fromEmail + "' named '" + name
+        String body = "Someone with email address '" + fromEmail + "' named '" + name
                 + "' sends you this message: \n\n" + message;
 
-        LOG.info("Sending email to " + toAddress + ", message=\n\n" + message);
+        if (Strings.isNotEmpty(noHuman)) {
+            body = "ROBOT ALERT!! The robot says: '" + noHuman + "'\n\n" + body;
+        }
+
+        LOG.info("Sending email to " + toAddress + ", message=\n\n" + body);
 
         try {
             Email email = new SimpleEmail();
@@ -69,7 +76,7 @@ public class MailSender {
                 email.addReplyTo(fromEmail);
             }
             email.setSubject("contact form message");
-            email.setMsg(message);
+            email.setMsg(body);
             email.addTo(toAddress);
             email.send();
         } catch (EmailException e) {
