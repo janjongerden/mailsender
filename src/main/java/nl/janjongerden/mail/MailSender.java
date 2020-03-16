@@ -4,7 +4,8 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -19,7 +20,7 @@ public class MailSender {
 
     private static String thanksLocation = "/thanks";
 
-    private static final Logger LOG = Logger.getLogger(MailSender.class);
+    private static final Logger LOG = LogManager.getLogger(MailSender.class);
 
 
     /**

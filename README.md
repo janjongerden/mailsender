@@ -12,9 +12,11 @@ mvn clean install
 Now run the executable jar with your email address and the redirect page as parameters:
 
 ```
-java -jar mailsender-1.0-SNAPSHOT.jar yourname@example.org https://example.org/thank_you.html
+java -jar target/mailsender-1.0-SNAPSHOT.jar yourname@example.org https://example.org/thank_you.html
 ```
 
 After this you will have a service listening for mail-posts on port <yourhost>:4567/mail
+
+The service expects the POST request to contain the fields `name`, `email` and `message`.
 
 No warranty + feel free to use any way you see fit.
