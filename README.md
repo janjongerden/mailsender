@@ -1,7 +1,7 @@
 # mailsender
 Stand-alone rest service that sends email
 
-This light weight service listens for posts and then sends them to the email address specified as a command line argument.
+This lightweight service listens for posts and then sends them to the email address specified as a command line argument.
 Enables mail-sending from a form without the use of PHP or CGI scripts and without including your mail address in the html source.
 To run the service, clone the project and build it:
 

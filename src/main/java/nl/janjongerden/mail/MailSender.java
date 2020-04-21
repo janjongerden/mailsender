@@ -6,7 +6,9 @@ import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -42,13 +44,11 @@ public class MailSender {
         get("/thanks", (request, response) -> "Thank you for your message!");
 
         post("/mail", (request, response) -> {
-            String name = request.queryParams("name");
-            String email = request.queryParams("email");
-            String message = request.queryParams("message");
-            // this is a field only intended to be used by spam bots
-            String noHuman = request.queryParams("nohuman");
+            Map<String, String> parameters = new HashMap<>();
+            request.queryParams()
+                    .forEach(param -> parameters.put(param, request.queryParams(param)));
 
-            if (sendMail(email, name, message, noHuman)) {
+            if (sendMail(parameters)) {
                 response.redirect(thanksLocation);
             }
 
@@ -56,14 +56,16 @@ public class MailSender {
         });
     }
 
-    private static boolean sendMail(String fromEmail, String name, String message, String noHuman) {
+    private static boolean sendMail(Map<String, String> params) {
+        String message = params.getOrDefault("message", "<no message>");
+        String fromEmail = params.get("email");
 
-        String body = "Someone with email address '" + fromEmail + "' named '" + name
-                + "' sends you this message: \n\n" + message;
+        StringBuilder body = new StringBuilder("Some one sent a contact message:\n");
 
-        if (Strings.isNotEmpty(noHuman)) {
-            body = "ROBOT ALERT!! The robot says: '" + noHuman + "'\n\n" + body;
-        }
+        params.forEach((param, value) -> body.append(String.format("Parameter '%s' => '%s'\n", param, value)));
+
+        body.append ("And the message is: \n\n");
+        body.append (message);
 
         LOG.info("Sending email to " + toAddress + ", message=\n\n" + body);
 
@@ -71,12 +73,12 @@ public class MailSender {
             Email email = new SimpleEmail();
 
             email.setHostName("localhost");
-            email.setFrom("mailform@janjongerden.nl");
+            email.setFrom("mailform" + "@" + "janjongerden.nl");
             if (EmailValidator.getInstance().isValid(fromEmail)) {
                 email.addReplyTo(fromEmail);
             }
             email.setSubject("contact form message");
-            email.setMsg(body);
+            email.setMsg(body.toString());
             email.addTo(toAddress);
             email.send();
         } catch (EmailException e) {
