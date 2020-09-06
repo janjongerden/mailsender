@@ -19,6 +19,9 @@ import static spark.Spark.post;
  */
 public class MailSender {
 
+    // the hardcoded correct answer to the robot-filtering question in the form
+    private static final String THE_CORRECT_ANSWER = "rabbit";
+
     private static String toAddress = "someone@example.org";
 
     private static String thanksLocation = "/thanks";
@@ -39,7 +42,7 @@ public class MailSender {
         if (args.length > 1) {
             thanksLocation = args[1];
         }
-        LOG.info("Mailsender started with toaddress '"+toAddress+"' and thanks page '"+thanksLocation+"'");
+        LOG.info("Mailsender started with toaddress '" + toAddress + "' and thanks page '" + thanksLocation + "'");
 
         get("/thanks", (request, response) -> "Thank you for your message!");
 
@@ -57,12 +60,22 @@ public class MailSender {
     }
 
     private static boolean sendMail(Map<String, String> params) {
+        String turingTestAnswer = params.getOrDefault("turingtest", "it's a robot!");
+        
+        if (!turingTestAnswer.equalsIgnoreCase(THE_CORRECT_ANSWER)) {
+            LOG.info("received an incorrect answer: '" + turingTestAnswer + "', instead of '" + THE_CORRECT_ANSWER + "'");
+            // act as if all went well to confuse the robot
+            return true;
+        }
+        
         String message = params.getOrDefault("message", "<no message>");
         String fromEmail = params.get("email");
 
-        StringBuilder body = new StringBuilder("Some one sent a contact message:\n");
+        StringBuilder body = new StringBuilder("Someone sent a contact message:\n");
 
-        params.forEach((param, value) -> body.append(String.format("Parameter '%s' => '%s'\n", param, value)));
+        params.entrySet().stream()
+                .filter(e -> !"message".equalsIgnoreCase(e.getKey()))
+                .map(entry -> body.append(String.format("Parameter '%s' => '%s'\n", entry.getKey(), entry.getValue())));
 
         body.append ("And the message is: \n\n");
         body.append (message);
