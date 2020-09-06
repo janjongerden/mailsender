@@ -80,7 +80,7 @@ public class MailSender {
                 .collect(Collectors.joining("\n"));
 
         body.append(parameterString);
-        body.append ("And the message is: \n\n");
+        body.append ("\n\nAnd the message is: \n\n");
         body.append (message);
 
         LOG.info("Sending email to " + toAddress + ", message=\n\n" + body);
