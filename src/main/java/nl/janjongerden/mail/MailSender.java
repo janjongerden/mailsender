@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -73,10 +74,12 @@ public class MailSender {
 
         StringBuilder body = new StringBuilder("Someone sent a contact message:\n");
 
-        params.entrySet().stream()
+        String parameterString = params.entrySet().stream()
                 .filter(e -> !"message".equalsIgnoreCase(e.getKey()))
-                .map(entry -> body.append(String.format("Parameter '%s' => '%s'\n", entry.getKey(), entry.getValue())));
+                .map(entry -> String.format("Parameter '%s' => '%s'", entry.getKey(), entry.getValue()))
+                .collect(Collectors.joining("\n"));
 
+        body.append(parameterString);
         body.append ("And the message is: \n\n");
         body.append (message);
 
