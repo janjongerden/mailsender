@@ -17,6 +17,7 @@ java -jar target/mailsender-1.0-SNAPSHOT.jar yourname@example.org https://exampl
 
 After this you will have a service listening for mail-posts on port <yourhost>:4567/mail
 
-The service expects the POST request to contain the fields `name`, `email` and `message`.
+The service expects the POST request to contain the fields `name`, `email`, `turingtest` and `message`.
+The field `turingtest` must contain the answer to a bot-filtering question, which is currently hardcoded.
 
 No warranty + feel free to use any way you see fit.
